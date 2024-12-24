@@ -25,7 +25,7 @@ a module should have the following structure:
 }
 ```
 
-Modules can also be used as functions accepting and attribute set:
+Modules can also be used as functions accepting an attribute set:
 ```
 { config, pkgs, ...}:
     let
@@ -84,7 +84,15 @@ in {
   };
 }
 ```
-as we can see we are not using 'imports' as is not needed in this case cus everything is in the file.
+At first this module might look very hard to understand if you aren't familiar with nix language bt this module is pretty straight forward, lets discuss the main points in it:
 
-    
-    
+first we define the attribute set, in that case we need : `pkgs` , `config` and `lib`:
+ we need packages because we will some plugins for the program(OBS)  that is in the nix repository and to access to it we need  `pkgs`,
+`config` because as we described earlier it means or entire system configuration and last but not least we have `lib` the latter one is used in basically every module you will see in nix as it is a helper, the lib function has tons of uses but here we are just going to see the modules and options handling functions that helps us define, evaluate and merge modules, we will discuss this deeper later on the guide.
+
+we then have a let-in with `cfg = config.gui.obs;` and `inherit(lib) ...(look up)`, the first one is for good looking code you could write the whole line everywhere when needed but at the end of the day it can get very long so just get it inside of some variable of your preference, cfg from what i seen is the most used one,
+now lets discuss about the second line, as you might know the inherit keyword is basically for inheriting as the name says duh, here we are inheriting from `lib` the `mkEnableOption` and `mkIf` to use later on without the need of using `lib.thing`.
+
+know we have `options.gui.obs.enable = mkEnableOption "obs"; ` so with this we are defining an option named gui.obs and and making it an enable option(something that can be on or off) with mkEnableOption and the `"obs"` at the end is an argument that most people i see use for an brief explanation of the use case of the module.
+
+down we have the `config = mkIf cfg.enable`, basically: if the option is enabled the configuration inside it will be enabled/used for the need generation, take into account that to enable it you instead of using `options.the_thing.enable = true;` you need to use what you earlier defined inside the cfg `config.the_thing.enable = true;`
