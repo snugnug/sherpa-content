@@ -2,6 +2,8 @@ name: Sherpa CI
 
 on: 
   push:
+    branches:
+    - main
     paths:
     - '**.md'
     - '**.yml'
